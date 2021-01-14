@@ -1,6 +1,5 @@
 package lk.ijse.dep.web.business;
 
-import lk.ijse.dep.web.dao.DataAccess;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.dto.ItemDTO;
 import lk.ijse.dep.web.dto.OrderDTO;
@@ -11,7 +10,6 @@ import lk.ijse.dep.web.entity.OrderDetail;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
