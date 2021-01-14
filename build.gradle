@@ -25,4 +25,5 @@ dependencies {
     implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
     implementation group: 'javax.json.bind', name: 'javax.json.bind-api', version: '1.0'
     implementation group: 'org.eclipse', name: 'yasson', version: '1.0.8'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 }

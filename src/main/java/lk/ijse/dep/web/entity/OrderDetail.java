@@ -51,8 +51,7 @@ public class OrderDetail implements Serializable {
     @Override
     public String toString() {
         return "OrderDetail{" +
-                "orderId='" + orderId + '\'' +
-                ", itemCode='" + itemCode + '\'' +
+                "orderDetailPK=" + orderDetailPK +
                 ", qty=" + qty +
                 ", unitPrice=" + unitPrice +
                 '}';
