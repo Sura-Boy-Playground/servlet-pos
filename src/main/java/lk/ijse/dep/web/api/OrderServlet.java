@@ -1,5 +1,6 @@
 package lk.ijse.dep.web.api;
 
+import lk.ijse.dep.web.business.AppWideBO;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.dto.OrderDTO;
 import lk.ijse.dep.web.dto.OrderDetailDTO;
@@ -33,30 +34,6 @@ public class OrderServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Jsonb jsonb = JsonbBuilder.create();
-        final BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
-
-        try (Connection connection = cp.getConnection()) {
-            Statement stm = connection.createStatement();
-            ResultSet rst = stm.executeQuery("SELECT * FROM customer");
-            List<CustomerDTO> customers = new ArrayList<>();
-
-            while (rst.next()) {
-                customers.add(new CustomerDTO(rst.getString("id"),
-                        rst.getString("name"),
-                        rst.getString("address")));
-            }
-
-            resp.setContentType("application/json");
-            resp.getWriter().println(jsonb.toJson(customers));
-
-        } catch (Throwable t) {
-            ResponseExceptionUtil.handle(t, resp);
-        }
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         Jsonb jsonb = JsonbBuilder.create();
         final BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
@@ -68,51 +45,17 @@ public class OrderServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid order details" , null);
             }
 
-            try {
-
-                /* Let's start transactions */
-                connection.setAutoCommit(false);
-
-                PreparedStatement pstm = connection.prepareStatement("INSERT INTO `order` VALUES (?,?,?)");
-                pstm.setString(1, dto.getOrderId());
-                pstm.setDate(2, Date.valueOf(dto.getOrderDate()));
-                pstm.setString(3, dto.getCustomerId());
-
-                if (pstm.executeUpdate() > 0) {
-
-                    pstm = connection.prepareStatement("INSERT INTO order_detail VALUE (?,?,?,?)");
-                    PreparedStatement pstm2 = connection.prepareStatement("UPDATE item SET qty_on_hand = qty_on_hand - ? WHERE code=?");
-                    for (OrderDetailDTO detail : dto.getOrderDetails()) {
-                        pstm.setString(1, dto.getOrderId());
-                        pstm.setString(2, detail.getItemCode());
-                        pstm.setInt(3, detail.getQty());
-                        pstm.setBigDecimal(4, detail.getUnitPrice());
-
-                        pstm2.setInt(1,detail.getQty());
-                        pstm2.setString(2,detail.getItemCode());
-
-                        if (pstm.executeUpdate() == 0 || pstm2.executeUpdate() == 0){
-                            throw new HttpResponseException(500, "Failed to save the order, transaction failed during order details processing", null);
-                        }
-                    }
-
-                    connection.commit();
-                    resp.setStatus(HttpServletResponse.SC_CREATED);
-                } else {
-                    throw new HttpResponseException(500, "Failed to save the order, transaction failed", null);
-                }
-
-            }catch (Throwable t){
-                /* In case something happens unexpectedly */
-                connection.rollback();
-                throw t;
+            if (new AppWideBO(connection).saveOrder(dto)){
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+            }else{
+                throw new HttpResponseException(500, "Failed to save the order", null);
             }
         }catch (SQLIntegrityConstraintViolationException exp){
             throw new HttpResponseException(400, "Duplicate entry", exp);
         } catch (JsonbException exp) {
             exp.printStackTrace();
             throw new HttpResponseException(400, "Failed to read the JSON", exp);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

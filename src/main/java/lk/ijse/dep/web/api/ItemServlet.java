@@ -1,5 +1,6 @@
 package lk.ijse.dep.web.api;
 
+import lk.ijse.dep.web.business.AppWideBO;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.dto.ItemDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
@@ -43,16 +44,13 @@ public class ItemServlet extends HttpServlet {
 
             String code = req.getPathInfo().replace("/", "");
 
-            PreparedStatement pstm = connection.prepareStatement("DELETE FROM item WHERE code=?");
-            pstm.setString(1, code );
-
-            if (pstm.executeUpdate()> 0){
+            if (new AppWideBO(connection).deleteItem(code)){
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else{
                 throw new HttpResponseException(404, "There is no such item exists", null);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -76,13 +74,7 @@ public class ItemServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid details", null);
             }
 
-            PreparedStatement pstm = connection.prepareStatement("UPDATE item SET description=?, unit_price=?, qty_on_hand=? WHERE code=?");
-            pstm.setString(1, dto.getDescription() );
-            pstm.setBigDecimal(2, dto.getUnitPrice() );
-            pstm.setInt(3, dto.getQtyOnHand() );
-            pstm.setString(4, code );
-
-            if (pstm.executeUpdate()> 0){
+            if (new AppWideBO(connection).updateItem(dto)){
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else{
                 throw new HttpResponseException(500, "Failed to update the item", null);
@@ -90,7 +82,7 @@ public class ItemServlet extends HttpServlet {
 
         }catch (JsonbException exp){
             throw new HttpResponseException(400, "Failed to read the JSON", exp);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -101,19 +93,8 @@ public class ItemServlet extends HttpServlet {
         final BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
 
         try (Connection connection = cp.getConnection()) {
-            Statement stm = connection.createStatement();
-            ResultSet rst = stm.executeQuery("SELECT * FROM item");
-            List<ItemDTO> items = new ArrayList<>();
-
-            while (rst.next()) {
-                items.add(new ItemDTO(rst.getString("code"),
-                        rst.getString("description"),
-                        rst.getBigDecimal("unitPrice"),
-                        rst.getInt("qtyOnHand")));
-            }
-
             resp.setContentType("application/json");
-            resp.getWriter().println(jsonb.toJson(items));
+            resp.getWriter().println(jsonb.toJson(new AppWideBO(connection).getAllItems()));
 
         } catch (Throwable t) {
             ResponseExceptionUtil.handle(t, resp);
@@ -132,13 +113,7 @@ public class ItemServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid item details" , null);
             }
 
-            PreparedStatement pstm = connection.prepareStatement("INSERT INTO item VALUES (?,?,?,?)");
-            pstm.setString(1, dto.getCode());
-            pstm.setString(2, dto.getDescription());
-            pstm.setBigDecimal(3, dto.getUnitPrice());
-            pstm.setInt(4, dto.getQtyOnHand());
-
-            if (pstm.executeUpdate() > 0) {
+            if (new AppWideBO(connection).saveItem(dto)) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 resp.setContentType("application/json");
                 resp.getWriter().println(jsonb.toJson(dto));
@@ -149,7 +124,7 @@ public class ItemServlet extends HttpServlet {
             throw new HttpResponseException(400, "Duplicate entry", exp);
         } catch (JsonbException exp) {
             throw new HttpResponseException(400, "Failed to read the JSON", exp);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

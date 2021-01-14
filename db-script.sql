@@ -9,8 +9,8 @@ CREATE TABLE item
 (
     code        VARCHAR(10) PRIMARY KEY,
     description VARCHAR(50) NOT NULL,
-    unitPrice   DECIMAL     NOT NULL,
-    qtyOnHand   INT         NOT NULL
+    unit_price  DECIMAL     NOT NULL,
+    qty_on_hand INT         NOT NULL
 );
 
 CREATE TABLE `order`

@@ -1,5 +1,6 @@
 package lk.ijse.dep.web.api;
 
+import lk.ijse.dep.web.business.AppWideBO;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
 import lk.ijse.dep.web.exception.ResponseExceptionUtil;
@@ -42,16 +43,13 @@ public class CustomerServlet extends HttpServlet {
 
             String id = req.getPathInfo().replace("/", "");
 
-            PreparedStatement pstm = connection.prepareStatement("DELETE FROM customer WHERE id=?");
-            pstm.setString(1, id );
-
-            if (pstm.executeUpdate()> 0){
+            if (new AppWideBO(connection).deleteCustomer(id)){
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else{
                 throw new HttpResponseException(404, "There is no such customer exists", null);
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -75,12 +73,7 @@ public class CustomerServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid details", null);
             }
 
-            PreparedStatement pstm = connection.prepareStatement("UPDATE customer SET `name`=?, address=? WHERE id=?");
-            pstm.setString(1, dto.getName() );
-            pstm.setString(2, dto.getAddress() );
-            pstm.setString(3, id );
-
-            if (pstm.executeUpdate()> 0){
+            if (new AppWideBO(connection).updateCustomer(dto)){
                 resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }else{
                 throw new HttpResponseException(500, "Failed to update the customer", null);
@@ -88,7 +81,7 @@ public class CustomerServlet extends HttpServlet {
 
         }catch (JsonbException exp){
             throw new HttpResponseException(400, "Failed to read the JSON", exp);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -99,18 +92,8 @@ public class CustomerServlet extends HttpServlet {
         final BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
 
         try (Connection connection = cp.getConnection()) {
-            Statement stm = connection.createStatement();
-            ResultSet rst = stm.executeQuery("SELECT * FROM customer");
-            List<CustomerDTO> customers = new ArrayList<>();
-
-            while (rst.next()) {
-                customers.add(new CustomerDTO(rst.getString("id"),
-                        rst.getString("name"),
-                        rst.getString("address")));
-            }
-
             resp.setContentType("application/json");
-            resp.getWriter().println(jsonb.toJson(customers));
+            resp.getWriter().println(jsonb.toJson(new AppWideBO(connection).getAllCustomers()));
 
         } catch (Throwable t) {
             ResponseExceptionUtil.handle(t, resp);
@@ -129,12 +112,7 @@ public class CustomerServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid customer details" , null);
             }
 
-            PreparedStatement pstm = connection.prepareStatement("INSERT INTO customer VALUES (?,?,?)");
-            pstm.setString(1, dto.getId());
-            pstm.setString(2, dto.getName());
-            pstm.setString(3, dto.getAddress());
-
-            if (pstm.executeUpdate() > 0) {
+            if (new AppWideBO(connection).saveCustomer(dto)) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
                 resp.setContentType("application/json");
                 resp.getWriter().println(jsonb.toJson(dto));
@@ -145,7 +123,7 @@ public class CustomerServlet extends HttpServlet {
             throw new HttpResponseException(400, "Duplicate entry", exp);
         } catch (JsonbException exp) {
             throw new HttpResponseException(400, "Failed to read the JSON", exp);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
