@@ -2,7 +2,7 @@ package lk.ijse.dep.web.entity;
 
 import java.io.Serializable;
 
-public class Customer implements Serializable {
+public class Customer implements SuperEntity {
     private String id;
     private String name;
     private String address;

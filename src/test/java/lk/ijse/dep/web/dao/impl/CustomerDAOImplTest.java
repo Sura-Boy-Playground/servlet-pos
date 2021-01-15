@@ -1,6 +1,7 @@
-package lk.ijse.dep.web.dao;
+package lk.ijse.dep.web.dao.impl;
 
 import lk.ijse.dep.web.ConnectionPool;
+import lk.ijse.dep.web.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.dep.web.entity.Customer;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.junit.*;
@@ -10,11 +11,11 @@ import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
-public class CustomerDAOTest {
+public class CustomerDAOImplTest {
 
     private static BasicDataSource pool;
     private Connection connection;
-    private CustomerDAO dao;
+    private CustomerDAOImpl dao;
 
     @BeforeClass
     public static void executeClassBefore(){
@@ -31,10 +32,11 @@ public class CustomerDAOTest {
     }
 
     @Before
-    public void prepareBeforeTest() throws SQLException {
+    public void prepareBeforeTest() throws Exception {
         connection = pool.getConnection();
         connection.setAutoCommit(false);
-        dao = new CustomerDAO(connection);
+        dao = new CustomerDAOImpl();
+        dao.setConnection(connection);
     }
 
     @After
@@ -46,37 +48,37 @@ public class CustomerDAOTest {
 
     @Test
     public void saveCustomer() throws Exception {
-        assertTrue(dao.saveCustomer(new Customer("C007", "Tharanga", "Matara")));
-        assertNotNull(dao.getCustomer("C007"));
+        assertTrue(dao.save(new Customer("C007", "Tharanga", "Matara")));
+        assertNotNull(dao.get("C007"));
     }
 
     @Test
     public void updateCustomer() throws Exception {
-        dao.saveCustomer(new Customer("C007","Tharanga","Matara"));
-        assertTrue(dao.updateCustomer(new Customer("C007", "Tharanga+","Matara+")));
-        assertEquals(dao.getCustomer("C007").getName(),"Tharanga+");
-        assertEquals(dao.getCustomer("C007").getAddress(),"Matara+");
+        dao.save(new Customer("C007","Tharanga","Matara"));
+        assertTrue(dao.update(new Customer("C007", "Tharanga+","Matara+")));
+        assertEquals(dao.get("C007").getName(),"Tharanga+");
+        assertEquals(dao.get("C007").getAddress(),"Matara+");
     }
 
     @Test
     public void deleteCustomer() throws Exception {
-        dao.saveCustomer(new Customer("C007","Tharanga","Matara"));
-        assertTrue(dao.deleteCustomer("C007"));
-        assertNull(dao.getCustomer("C007"));
+        dao.save(new Customer("C007","Tharanga","Matara"));
+        assertTrue(dao.delete("C007"));
+        assertNull(dao.get("C007"));
     }
 
     @Test
     public void getAllCustomers() throws Exception {
-        dao.saveCustomer(new Customer("C007","Tharanga","Matara"));
-        dao.saveCustomer(new Customer("C008","Kasun","Matara"));
-        assertTrue(dao.getAllCustomers().size() > 0);
+        dao.save(new Customer("C007","Tharanga","Matara"));
+        dao.save(new Customer("C008","Kasun","Matara"));
+        assertTrue(dao.getAll().size() > 0);
     }
 
     @Test
     public void getCustomer() throws Exception {
-        dao.saveCustomer(new Customer("C007","Tharanga","Matara"));
-        assertNotNull(dao.getCustomer("C007"));
-        assertEquals(dao.getCustomer("C007").getName(), "Tharanga");
-        assertEquals(dao.getCustomer("C007").getAddress(), "Matara");
+        dao.save(new Customer("C007","Tharanga","Matara"));
+        assertNotNull(dao.get("C007"));
+        assertEquals(dao.get("C007").getName(), "Tharanga");
+        assertEquals(dao.get("C007").getAddress(), "Matara");
     }
 }

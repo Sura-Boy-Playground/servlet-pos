@@ -1,6 +1,8 @@
-package lk.ijse.dep.web.dao;
+package lk.ijse.dep.web.dao.impl;
 
 import lk.ijse.dep.web.ConnectionPool;
+import lk.ijse.dep.web.dao.custom.impl.CustomerDAOImpl;
+import lk.ijse.dep.web.dao.custom.impl.OrderDAOImpl;
 import lk.ijse.dep.web.entity.Customer;
 import lk.ijse.dep.web.entity.Order;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -12,12 +14,12 @@ import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
-public class OrderDAOTest {
+public class OrderDAOImplTest {
 
     private static BasicDataSource pool;
     private Connection connection;
-    private OrderDAO orderDAO;
-    private CustomerDAO customerDAO;
+    private OrderDAOImpl orderDAOImpl;
+    private CustomerDAOImpl customerDAOImpl;
 
     @BeforeClass
     public static void executeClassBefore(){
@@ -34,11 +36,13 @@ public class OrderDAOTest {
     }
 
     @Before
-    public void prepareBeforeTest() throws SQLException {
+    public void prepareBeforeTest() throws Exception {
         connection = pool.getConnection();
         connection.setAutoCommit(false);
-        orderDAO = new OrderDAO(connection);
-        customerDAO = new CustomerDAO(connection);
+        orderDAOImpl = new OrderDAOImpl();
+        customerDAOImpl = new CustomerDAOImpl();
+        orderDAOImpl.setConnection(connection);
+        customerDAOImpl.setConnection(connection);
     }
 
     @After
@@ -50,9 +54,9 @@ public class OrderDAOTest {
 
     @Test
     public void saveOrder() throws Exception {
-        customerDAO.saveCustomer(new Customer("C007","Kasun","Galle"));
-        assertTrue(orderDAO.saveOrder
+        customerDAOImpl.save(new Customer("C007","Kasun","Galle"));
+        assertTrue(orderDAOImpl.save
                 (new Order("OD005",new Date(System.currentTimeMillis()),"C007")));
-        assertNotNull(orderDAO.getOrder("OD005"));
+        assertNotNull(orderDAOImpl.get("OD005"));
     }
 }
