@@ -1,5 +1,6 @@
 package lk.ijse.dep.web.dao.custom.impl;
 
+import lk.ijse.dep.web.dao.CrudUtil;
 import lk.ijse.dep.web.dao.custom.OrderDAO;
 import lk.ijse.dep.web.entity.Order;
 
@@ -20,34 +21,23 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public boolean save(Order order) throws Exception {
-        PreparedStatement pstm = connection.prepareStatement("INSERT INTO `order` VALUES (?,?,?)");
-        pstm.setString(1, order.getId());
-        pstm.setDate(2, order.getDate());
-        pstm.setString(3, order.getCustomerId());
-        return pstm.executeUpdate() > 0;
+        return CrudUtil.execute(connection, "INSERT INTO `order` VALUES (?,?,?)", order.getId(), order.getDate(), order.getCustomerId());
     }
 
     @Override
     public boolean update(Order order) throws Exception {
-        PreparedStatement pstm = connection.prepareStatement("UPDATE `order` SET date=?, customer=? WHERE id=?");
-        pstm.setString(3, order.getId());
-        pstm.setDate(1, order.getDate());
-        pstm.setString(2, order.getCustomerId());
-        return pstm.executeUpdate() > 0;
+        return CrudUtil.execute(connection, "UPDATE `order` SET date=?, customer=? WHERE id=?", order.getDate(), order.getCustomerId(), order.getId());
     }
 
     @Override
     public boolean delete(String id) throws Exception {
-        PreparedStatement pstm = connection.prepareStatement("DELETE FROM `order` WHERE id=?");
-        pstm.setString(1, id);
-        return pstm.executeUpdate() > 0;
+        return CrudUtil.execute(connection, "DELETE FROM `order` WHERE id=?", id);
     }
 
     @Override
     public List<Order> getAll() throws Exception {
-        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM `order`");
         List<Order> orders = new ArrayList<>();
-        ResultSet rst = pstm.executeQuery();
+        ResultSet rst = CrudUtil.execute(connection, "SELECT * FROM `order`");
         while (rst.next()) {
             orders.add(new Order(rst.getString("id"),
                     rst.getDate("date"),
@@ -58,9 +48,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public Order get(String id) throws Exception {
-        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM `order` WHERE id=?");
-        pstm.setString(1, id);
-        ResultSet rst = pstm.executeQuery();
+        ResultSet rst = CrudUtil.execute(connection, "SELECT * FROM `order` WHERE id=?", id);
         if (rst.next()) {
             return new Order(rst.getString("id"),
                     rst.getDate("date"),
