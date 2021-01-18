@@ -79,8 +79,7 @@ public class OrderBOImpl implements OrderBO {
 
         }catch (Throwable t){
             connection.rollback();
-            t.printStackTrace();
-            return false;
+            throw t;
         }finally {
             connection.setAutoCommit(true);
         }

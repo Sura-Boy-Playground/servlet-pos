@@ -1,6 +1,8 @@
 package lk.ijse.dep.web.exception;
 
 import lk.ijse.dep.web.dto.ErrorDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
@@ -8,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ResponseExceptionUtil {
+
+    static final Logger logger = LoggerFactory.getLogger(ResponseExceptionUtil.class);
 
     public static void handle(Throwable t, HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json");
@@ -30,14 +34,14 @@ public class ResponseExceptionUtil {
                     dto.setMessage(ex.getMessage());
                     break;
                 case 500:
-                    ex.printStackTrace();
+                    logger.error(ex.getMessage(), ex);
                     break;
                 default:
                     // We are good here :)
             }
         } else {
             resp.setStatus(500);
-            t.printStackTrace();
+            logger.error("Something went wrong", t);
         }
         resp.getWriter().println(jsonb.toJson(dto));
 

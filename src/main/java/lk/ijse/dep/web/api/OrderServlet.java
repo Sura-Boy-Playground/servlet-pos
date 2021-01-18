@@ -55,7 +55,7 @@ public class OrderServlet extends HttpServlet {
         } catch (JsonbException exp) {
             exp.printStackTrace();
             throw new HttpResponseException(400, "Failed to read the JSON", exp);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
 
