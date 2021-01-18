@@ -1,9 +1,6 @@
 package lk.ijse.dep.web.api;
 
-import lk.ijse.dep.web.business.AppWideBO;
-import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.dto.OrderDTO;
-import lk.ijse.dep.web.dto.OrderDetailDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
 import lk.ijse.dep.web.exception.ResponseExceptionUtil;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -18,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @WebServlet(urlPatterns = "/api/v1/orders")
 public class OrderServlet extends HttpServlet {

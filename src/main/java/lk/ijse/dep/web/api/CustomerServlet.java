@@ -1,6 +1,5 @@
 package lk.ijse.dep.web.api;
 
-import lk.ijse.dep.web.business.AppWideBO;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
 import lk.ijse.dep.web.exception.ResponseExceptionUtil;
@@ -16,8 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @WebServlet(urlPatterns = "/api/v1/customers/*")
 public class CustomerServlet extends HttpServlet {
