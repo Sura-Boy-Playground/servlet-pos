@@ -29,11 +29,6 @@ public class CustomerServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            logger.error("Incoming request: " + req.getServletPath());
-            logger.warn("Incoming request: " + req.getServletPath());
-            logger.info("Incoming request: " + req.getServletPath());
-            logger.debug("Incoming request: " + req.getServletPath());
-            logger.trace("Incoming request: " + req.getServletPath());
             super.service(req, resp);
         }catch (Throwable t){
             ResponseExceptionUtil.handle(t,resp);

@@ -51,6 +51,7 @@ public class ContextListener implements ServletContextListener {
             }
             FileHandler fileHandler = new FileHandler(logFilePath, true);
             fileHandler.setFormatter(new SimpleFormatter());
+            fileHandler.setLevel(Level.INFO);
             Logger.getLogger("").addHandler(fileHandler);
         } catch (IOException e) {
             e.printStackTrace();
