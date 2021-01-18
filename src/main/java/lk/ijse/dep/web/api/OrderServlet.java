@@ -1,5 +1,8 @@
 package lk.ijse.dep.web.api;
 
+import lk.ijse.dep.web.business.BOFactory;
+import lk.ijse.dep.web.business.BOTypes;
+import lk.ijse.dep.web.business.custom.OrderBO;
 import lk.ijse.dep.web.dto.OrderDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
 import lk.ijse.dep.web.exception.ResponseExceptionUtil;
@@ -40,7 +43,9 @@ public class OrderServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid order details" , null);
             }
 
-            if (new AppWideBO(connection).saveOrder(dto)){
+            OrderBO orderBO = BOFactory.getInstance().getBO(BOTypes.ORDER);
+            orderBO.setConnection(connection);
+            if (orderBO.placeOrder(dto)){
                 resp.setStatus(HttpServletResponse.SC_CREATED);
             }else{
                 throw new HttpResponseException(500, "Failed to save the order", null);
