@@ -26,5 +26,10 @@ dependencies {
     implementation group: 'javax.json.bind', name: 'javax.json.bind-api', version: '1.0'
     implementation group: 'org.eclipse', name: 'yasson', version: '1.0.8'
     implementation group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.30'
+
+    implementation group: 'org.hibernate', name: 'hibernate-core', version: '5.4.27.Final'
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
     testImplementation group: 'junit', name: 'junit', version: '4.13.1'
 }

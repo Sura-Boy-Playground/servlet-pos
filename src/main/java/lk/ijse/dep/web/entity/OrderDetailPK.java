@@ -1,40 +1,20 @@
 package lk.ijse.dep.web.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+@Embeddable
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDetailPK implements Serializable {
+    @Column(name = "order_id")
     private String orderId;
+    @Column(name = "item_code")
     private String itemCode;
-
-    public OrderDetailPK() {
-    }
-
-    public OrderDetailPK(String orderId, String itemCode) {
-        this.setOrderId(orderId);
-        this.setItemCode(itemCode);
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getItemCode() {
-        return itemCode;
-    }
-
-    public void setItemCode(String itemCode) {
-        this.itemCode = itemCode;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderDetailPK{" +
-                "orderId='" + orderId + '\'' +
-                ", itemCode='" + itemCode + '\'' +
-                '}';
-    }
 }

@@ -1,9 +1,9 @@
 package lk.ijse.dep.web.dao;
 
-import java.sql.Connection;
+import org.hibernate.Session;
 
 public interface SuperDAO {
 
-    public abstract void setConnection(Connection connection) throws Exception;
+    public void setSession(Session session) throws Exception;
 
 }

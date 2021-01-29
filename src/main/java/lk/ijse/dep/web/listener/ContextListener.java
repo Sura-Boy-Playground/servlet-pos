@@ -1,5 +1,6 @@
 package lk.ijse.dep.web.listener;
 
+import lk.ijse.dep.web.util.HibernateUtil;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.LoggerFactory;
 
@@ -25,16 +26,9 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
 
         Properties prop = new Properties();
-        System.out.println("Connection pool is being initialized...!");
         try {
-            prop.load(this.getClass().getResourceAsStream("/application.properties"));
-            BasicDataSource bds = new BasicDataSource();
-            bds.setUsername(prop.getProperty("mysql.username"));
-            bds.setPassword(prop.getProperty("mysql.password"));
-            bds.setUrl(prop.getProperty("mysql.url"));
-            bds.setDriverClassName(prop.getProperty("mysql.driver_classname"));
-            bds.setInitialSize(5);
-            sce.getServletContext().setAttribute("cp", bds);
+            logger.info("Session factory is being initialized");
+            sce.getServletContext().setAttribute("sf", HibernateUtil.getSessionFactory());
 
 //            Properties properties = System.getProperties();
 //            for (Object o : properties.keySet()) {
@@ -60,12 +54,7 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        BasicDataSource bds = (BasicDataSource) sce.getServletContext().getAttribute("cp");
-        try {
-            bds.close();
-            System.out.println("Connection pool is closed...!");
-        } catch (SQLException throwables) {
-            logger.error("Failed to close the connection pool", throwables);
-        }
+        HibernateUtil.getSessionFactory().close();
+        logger.info("Session factory is being shut down");
     }
 }

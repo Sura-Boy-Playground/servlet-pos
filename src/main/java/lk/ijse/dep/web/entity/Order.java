@@ -1,53 +1,23 @@
 package lk.ijse.dep.web.entity;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.sql.Date;
 
+@Entity
+@Table(name = "`order`")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order implements SuperEntity {
 
+    @Id
     private String id;
     private Date date;
     private String customerId;
-
-    public Order() {
-    }
-
-    public Order(String id, Date date, String customerId) {
-        this.id = id;
-        this.date = date;
-        this.customerId = customerId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public String getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id='" + id + '\'' +
-                ", date=" + date +
-                ", customerId='" + customerId + '\'' +
-                '}';
-    }
 }
