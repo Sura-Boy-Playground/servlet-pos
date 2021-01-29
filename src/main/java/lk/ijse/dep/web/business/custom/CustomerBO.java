@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface CustomerBO extends SuperBO {
 
-    boolean saveCustomer(CustomerDTO dto) throws Exception;
+    void saveCustomer(CustomerDTO dto) throws Exception;
 
-    boolean updateCustomer(CustomerDTO dto) throws Exception;
+    void updateCustomer(CustomerDTO dto) throws Exception;
 
-    boolean deleteCustomer(String customerId) throws Exception;
+    void deleteCustomer(String customerId) throws Exception;
 
     List<CustomerDTO> findAllCustomers() throws Exception;
 }

@@ -6,7 +6,8 @@ import lk.ijse.dep.web.business.custom.OrderBO;
 import lk.ijse.dep.web.dto.OrderDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
 import lk.ijse.dep.web.exception.ResponseExceptionUtil;
-import org.apache.commons.dbcp2.BasicDataSource;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @WebServlet(urlPatterns = "/api/v1/orders")
 public class OrderServlet extends HttpServlet {
@@ -26,31 +27,28 @@ public class OrderServlet extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             super.service(req, resp);
-        }catch (Throwable t){
-            ResponseExceptionUtil.handle(t,resp);
+        } catch (Throwable t) {
+            ResponseExceptionUtil.handle(t, resp);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Jsonb jsonb = JsonbBuilder.create();
-        final BasicDataSource cp = (BasicDataSource) getServletContext().getAttribute("cp");
+        final SessionFactory sf = (SessionFactory) getServletContext().getAttribute("sf");
 
-        try (Connection connection = cp.getConnection()) {
+        try (Session session = sf.openSession()) {
             OrderDTO dto = jsonb.fromJson(req.getReader(), OrderDTO.class);
 
             if (dto.getOrderId() == null || dto.getOrderId().trim().isEmpty() || dto.getOrderDate() == null || dto.getOrderDetails().isEmpty()) {
-                throw new HttpResponseException(400, "Invalid order details" , null);
+                throw new HttpResponseException(400, "Invalid order details", null);
             }
 
             OrderBO orderBO = BOFactory.getInstance().getBO(BOTypes.ORDER);
-            orderBO.setConnection(connection);
-            if (orderBO.placeOrder(dto)){
-                resp.setStatus(HttpServletResponse.SC_CREATED);
-            }else{
-                throw new HttpResponseException(500, "Failed to save the order", null);
-            }
-        }catch (SQLIntegrityConstraintViolationException exp){
+            orderBO.setSession(session);
+            orderBO.placeOrder(dto);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (SQLIntegrityConstraintViolationException exp) {
             throw new HttpResponseException(400, "Duplicate entry", exp);
         } catch (JsonbException exp) {
             exp.printStackTrace();

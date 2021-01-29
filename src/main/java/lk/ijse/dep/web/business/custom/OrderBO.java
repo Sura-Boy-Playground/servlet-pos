@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderBO extends SuperBO {
 
-    public boolean placeOrder(OrderDTO dto) throws Exception;
+    public void placeOrder(OrderDTO dto) throws Exception;
 
     List<OrderDTO> searchOrdersByCustomerName(String name) throws Exception;
 }
