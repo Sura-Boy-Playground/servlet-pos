@@ -28,22 +28,31 @@ public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public void saveCustomer(CustomerDTO dto) throws Exception {
+        session.beginTransaction();
         customerDAO.save(new Customer(dto.getId(), dto.getName(), dto.getAddress()));
+        session.getTransaction().commit();
     }
 
     @Override
     public void updateCustomer(CustomerDTO dto) throws Exception {
+        session.beginTransaction();
         customerDAO.update(new Customer(dto.getId(), dto.getName(), dto.getAddress()));
+        session.getTransaction().commit();
     }
 
     @Override
     public void deleteCustomer(String customerId) throws Exception {
+        session.beginTransaction();
         customerDAO.delete(customerId);
+        session.getTransaction().commit();
     }
 
     @Override
     public List<CustomerDTO> findAllCustomers() throws Exception {
-        return customerDAO.getAll().stream().
+        session.beginTransaction();
+        List<CustomerDTO> collect = customerDAO.getAll().stream().
                 map(c -> new CustomerDTO(c.getId(), c.getName(), c.getAddress())).collect(Collectors.toList());
+        session.getTransaction().commit();
+        return collect;
     }
 }
