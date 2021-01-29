@@ -38,6 +38,7 @@ public class OrderBOImpl implements OrderBO {
         orderDAO.setSession(session);
         itemDAO.setSession(session);
         orderDAO.setSession(session);
+        orderDetailDAO.setSession(session);
         customerDAO.setSession(session);
     }
 
