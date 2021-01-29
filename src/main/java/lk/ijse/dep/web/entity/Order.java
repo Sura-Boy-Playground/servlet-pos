@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
@@ -19,5 +17,7 @@ public class Order implements SuperEntity {
     @Id
     private String id;
     private Date date;
-    private String customerId;
+    @ManyToOne
+    @JoinColumn(name="customer_id", referencedColumnName = "id", nullable = false)
+    private Customer customer;
 }
