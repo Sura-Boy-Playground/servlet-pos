@@ -78,6 +78,7 @@ public class CustomerServlet extends HttpServlet {
 
             CustomerBO customerBO = AppInitializer.getContext().getBean(CustomerBO.class);
             customerBO.setSession(session);
+            dto.setId(id);
             customerBO.updateCustomer(dto);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 

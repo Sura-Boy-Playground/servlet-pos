@@ -74,6 +74,7 @@ public class ItemServlet extends HttpServlet {
 
             ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
             itemBO.setSession(session);
+            dto.setCode(code);
             itemBO.updateItem(dto);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
