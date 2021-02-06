@@ -2,24 +2,24 @@ package lk.ijse.dep.web.business.custom.impl;
 
 import lk.ijse.dep.web.business.custom.ItemBO;
 import lk.ijse.dep.web.business.util.EntityDTOMapper;
-import lk.ijse.dep.web.dao.DAOFactory;
-import lk.ijse.dep.web.dao.DAOTypes;
 import lk.ijse.dep.web.dao.custom.ItemDAO;
 import lk.ijse.dep.web.dto.ItemDTO;
-import lk.ijse.dep.web.entity.Item;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Component
 public class ItemBOImpl implements ItemBO {
 
+    @Autowired
     private ItemDAO itemDAO;
     private Session session;
-    private EntityDTOMapper mapper = EntityDTOMapper.instance;
+    private final EntityDTOMapper mapper = EntityDTOMapper.instance;
 
     public ItemBOImpl() {
-        itemDAO = DAOFactory.getInstance().getDAO(DAOTypes.ITEM);
+
     }
 
     @Override

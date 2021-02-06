@@ -1,9 +1,7 @@
 package lk.ijse.dep.web.business.util;
 
 
-import lk.ijse.dep.web.dao.DAOFactory;
-import lk.ijse.dep.web.dao.DAOTypes;
-import lk.ijse.dep.web.dao.SuperDAO;
+import lk.ijse.dep.web.AppInitializer;
 import lk.ijse.dep.web.dao.custom.CustomerDAO;
 import lk.ijse.dep.web.dto.OrderDTO;
 import lk.ijse.dep.web.dto.OrderDetailDTO;
@@ -18,7 +16,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-import javax.persistence.EntityManager;
 import java.sql.Date;
 import java.util.List;
 
@@ -38,7 +35,7 @@ public interface OrderEntityDTOMapper {
 
     default Customer getCustomer(OrderDTO dto){
         try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            CustomerDAO customerDAO = DAOFactory.getInstance().getDAO(DAOTypes.CUSTOMER);
+            CustomerDAO customerDAO = AppInitializer.getContext().getBean(CustomerDAO.class);
             try {
                 customerDAO.setSession(session);
                 return customerDAO.get(dto.getCustomerId());

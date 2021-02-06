@@ -1,7 +1,6 @@
 package lk.ijse.dep.web.api;
 
-import lk.ijse.dep.web.business.BOFactory;
-import lk.ijse.dep.web.business.BOTypes;
+import lk.ijse.dep.web.AppInitializer;
 import lk.ijse.dep.web.business.custom.ItemBO;
 import lk.ijse.dep.web.dto.ItemDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
@@ -44,7 +43,7 @@ public class ItemServlet extends HttpServlet {
 
             String code = req.getPathInfo().replace("/", "");
 
-            ItemBO itemBO = BOFactory.getInstance().getBO(BOTypes.ITEM);
+            ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
             itemBO.setSession(session);
             itemBO.deleteItem(code);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -73,7 +72,7 @@ public class ItemServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid details", null);
             }
 
-            ItemBO itemBO = BOFactory.getInstance().getBO(BOTypes.ITEM);
+            ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
             itemBO.setSession(session);
             itemBO.updateItem(dto);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -92,7 +91,7 @@ public class ItemServlet extends HttpServlet {
 
         try (Session session = sf.openSession()) {
             resp.setContentType("application/json");
-            ItemBO itemBO = BOFactory.getInstance().getBO(BOTypes.ITEM);
+            ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
             itemBO.setSession(session);
             resp.getWriter().println(jsonb.toJson(itemBO.findAllItems()));
 
@@ -113,7 +112,7 @@ public class ItemServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid item details", null);
             }
 
-            ItemBO itemBO = BOFactory.getInstance().getBO(BOTypes.ITEM);
+            ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
             itemBO.setSession(session);
             itemBO.saveItem(dto);
             resp.setStatus(HttpServletResponse.SC_CREATED);

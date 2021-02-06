@@ -1,7 +1,6 @@
 package lk.ijse.dep.web.api;
 
-import lk.ijse.dep.web.business.BOFactory;
-import lk.ijse.dep.web.business.BOTypes;
+import lk.ijse.dep.web.AppInitializer;
 import lk.ijse.dep.web.business.custom.CustomerBO;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import lk.ijse.dep.web.exception.HttpResponseException;
@@ -48,7 +47,7 @@ public class CustomerServlet extends HttpServlet {
 
             String id = req.getPathInfo().replace("/", "");
 
-            CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
+            CustomerBO customerBO = AppInitializer.getContext().getBean(CustomerBO.class);
             customerBO.setSession(session);
             customerBO.deleteCustomer(id);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -77,7 +76,7 @@ public class CustomerServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid details", null);
             }
 
-            CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
+            CustomerBO customerBO = AppInitializer.getContext().getBean(CustomerBO.class);
             customerBO.setSession(session);
             customerBO.updateCustomer(dto);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -97,7 +96,7 @@ public class CustomerServlet extends HttpServlet {
 
         try (Session session = sf.openSession()) {
             resp.setContentType("application/json");
-            CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
+            CustomerBO customerBO = AppInitializer.getContext().getBean(CustomerBO.class);
             customerBO.setSession(session);
             resp.getWriter().println(jsonb.toJson(customerBO.findAllCustomers()));
 
@@ -118,7 +117,7 @@ public class CustomerServlet extends HttpServlet {
                 throw new HttpResponseException(400, "Invalid customer details", null);
             }
 
-            CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
+            CustomerBO customerBO = AppInitializer.getContext().getBean(CustomerBO.class);
             customerBO.setSession(session);
             customerBO.saveCustomer(dto);
             resp.setStatus(HttpServletResponse.SC_CREATED);

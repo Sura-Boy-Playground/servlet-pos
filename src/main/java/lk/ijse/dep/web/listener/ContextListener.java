@@ -3,6 +3,7 @@ package lk.ijse.dep.web.listener;
 import lk.ijse.dep.web.util.HibernateUtil;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -24,6 +25,12 @@ public class ContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+
+        try {
+            Class.forName("lk.ijse.dep.web.AppInitializer");
+        } catch (ClassNotFoundException e) {
+            logger.error("Failed to load the spring container", e);
+        }
 
         Properties prop = new Properties();
         try {
