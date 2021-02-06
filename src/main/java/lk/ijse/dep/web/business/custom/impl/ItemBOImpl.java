@@ -1,6 +1,7 @@
 package lk.ijse.dep.web.business.custom.impl;
 
 import lk.ijse.dep.web.business.custom.ItemBO;
+import lk.ijse.dep.web.business.util.EntityDTOMapper;
 import lk.ijse.dep.web.dao.DAOFactory;
 import lk.ijse.dep.web.dao.DAOTypes;
 import lk.ijse.dep.web.dao.custom.ItemDAO;
@@ -15,6 +16,7 @@ public class ItemBOImpl implements ItemBO {
 
     private ItemDAO itemDAO;
     private Session session;
+    private EntityDTOMapper mapper = EntityDTOMapper.instance;
 
     public ItemBOImpl() {
         itemDAO = DAOFactory.getInstance().getDAO(DAOTypes.ITEM);
@@ -29,14 +31,14 @@ public class ItemBOImpl implements ItemBO {
     @Override
     public void saveItem(ItemDTO dto) throws Exception {
         session.beginTransaction();
-        itemDAO.save(new Item(dto.getCode(), dto.getDescription(), dto.getUnitPrice(), dto.getQtyOnHand()));
+        itemDAO.save(mapper.getItem(dto));
         session.getTransaction().commit();
     }
 
     @Override
     public void updateItem(ItemDTO dto) throws Exception {
         session.beginTransaction();
-        itemDAO.update(new Item(dto.getCode(), dto.getDescription(), dto.getUnitPrice(), dto.getQtyOnHand()));
+        itemDAO.update(mapper.getItem(dto));
         session.getTransaction().commit();
     }
 
@@ -50,8 +52,7 @@ public class ItemBOImpl implements ItemBO {
     @Override
     public List<ItemDTO> findAllItems() throws Exception {
         session.beginTransaction();
-        List<ItemDTO> collect = itemDAO.getAll().stream().
-                map(i -> new ItemDTO(i.getCode(), i.getDescription(), i.getUnitPrice(), i.getQtyOnHand())).collect(Collectors.toList());
+        List<ItemDTO> collect = mapper.getItemDTOs(itemDAO.getAll());
         session.getTransaction().commit();
         return collect;
     }

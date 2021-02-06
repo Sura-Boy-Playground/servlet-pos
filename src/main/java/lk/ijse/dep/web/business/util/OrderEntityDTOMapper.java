@@ -19,6 +19,7 @@ import org.mapstruct.factory.Mappers;
 
 import javax.persistence.EntityManager;
 import java.sql.Date;
+import java.util.List;
 
 @Mapper
 public interface OrderEntityDTOMapper {
@@ -42,6 +43,8 @@ public interface OrderEntityDTOMapper {
 
     @Mapping(source = ".", target = "orderDetailPK", qualifiedByName = "pk")
     OrderDetail getOrderDetail(OrderDetailDTO dto);
+
+    List<OrderDetail> getOrderDetails(List<OrderDetailDTO> dtos);
 
     @Named("pk")
     default OrderDetailPK toOrderDetailPK(OrderDetailDTO dto){

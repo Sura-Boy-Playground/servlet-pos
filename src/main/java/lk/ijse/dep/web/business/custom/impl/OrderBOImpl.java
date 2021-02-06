@@ -1,6 +1,7 @@
 package lk.ijse.dep.web.business.custom.impl;
 
 import lk.ijse.dep.web.business.custom.OrderBO;
+import lk.ijse.dep.web.business.util.OrderEntityDTOMapper;
 import lk.ijse.dep.web.dao.DAOFactory;
 import lk.ijse.dep.web.dao.DAOTypes;
 import lk.ijse.dep.web.dao.custom.CustomerDAO;
@@ -24,6 +25,7 @@ public class OrderBOImpl implements OrderBO {
     private ItemDAO itemDAO;
     private CustomerDAO customerDAO;
     private Session session;
+    private OrderEntityDTOMapper mapper = OrderEntityDTOMapper.instance;
 
     public OrderBOImpl() {
         orderDAO = DAOFactory.getInstance().getDAO(DAOTypes.ORDER);
@@ -49,12 +51,10 @@ public class OrderBOImpl implements OrderBO {
             boolean result = false;
 
             /* 1. Saving the order */
-            orderDAO.save(new Order(dto.getOrderId(), Date.valueOf(dto.getOrderDate()), customerDAO.get(dto.getCustomerId())));
+            orderDAO.save(mapper.getOrder(dto));
 
             /* 2. Saving Order Details -> Updating the stock */
-            List<OrderDetail> orderDetails = dto.getOrderDetails().stream().
-                    map(detail -> new OrderDetail(dto.getOrderId(), detail.getItemCode(), detail.getQty(), detail.getUnitPrice()))
-                    .collect(Collectors.toList());
+            List<OrderDetail> orderDetails = mapper.getOrderDetails(dto.getOrderDetails());
             for (OrderDetail orderDetail : orderDetails) {
                 orderDetailDAO.save(orderDetail);
 
