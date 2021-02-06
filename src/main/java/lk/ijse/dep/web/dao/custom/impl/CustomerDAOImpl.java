@@ -4,10 +4,11 @@ import lk.ijse.dep.web.dao.CrudDAOImpl;
 import lk.ijse.dep.web.dao.custom.CustomerDAO;
 import lk.ijse.dep.web.entity.Customer;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Component
+@Repository
 public class CustomerDAOImpl extends CrudDAOImpl<Customer, String> implements CustomerDAO {
 
     @Override

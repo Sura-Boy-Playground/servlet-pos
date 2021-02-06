@@ -2,6 +2,7 @@ package lk.ijse.dep.web.dao;
 
 import lk.ijse.dep.web.entity.SuperEntity;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class CrudDAOImpl<T extends SuperEntity, K extends Serializable> implements CrudDAO<T, K> {
 
+    @Autowired
     private Session session;
     private Class<T> entityClass;
 
@@ -19,11 +21,6 @@ public class CrudDAOImpl<T extends SuperEntity, K extends Serializable> implemen
 
     protected Session getSession() {
         return this.session;
-    }
-
-    @Override
-    public void setSession(Session session) throws Exception {
-        this.session = session;
     }
 
     @Override
