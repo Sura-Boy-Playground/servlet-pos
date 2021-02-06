@@ -1,8 +1,6 @@
 package lk.ijse.dep.web.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -19,9 +17,11 @@ public class OrderDetail implements SuperEntity {
     private int qty;
     @Column(name = "unit_price")
     private BigDecimal unitPrice;
+    @Setter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name="order_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Order order;
+    @Setter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name="item_code", referencedColumnName = "code", insertable = false, updatable = false)
     private Item item;

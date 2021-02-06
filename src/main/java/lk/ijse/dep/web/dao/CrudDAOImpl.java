@@ -13,7 +13,8 @@ public class CrudDAOImpl<T extends SuperEntity, K extends Serializable> implemen
     private Class<T> entityClass;
 
     public CrudDAOImpl() {
-        entityClass = (Class<T>) (((ParameterizedType) (this.getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
+        entityClass = (Class<T>) (((ParameterizedType)
+                (this.getClass().getGenericSuperclass())).getActualTypeArguments()[0]);
     }
 
     protected Session getSession() {

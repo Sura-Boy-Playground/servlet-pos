@@ -50,6 +50,7 @@ public class CustomerServlet extends HttpServlet {
 
             CustomerBO customerBO = BOFactory.getInstance().getBO(BOTypes.CUSTOMER);
             customerBO.setSession(session);
+            customerBO.deleteCustomer(id);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
         } catch (Exception e) {
