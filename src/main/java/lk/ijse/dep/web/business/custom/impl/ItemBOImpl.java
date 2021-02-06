@@ -6,6 +6,7 @@ import lk.ijse.dep.web.dao.custom.ItemDAO;
 import lk.ijse.dep.web.dto.ItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -18,10 +19,6 @@ public class ItemBOImpl implements ItemBO {
     private EntityDTOMapper mapper;
     @Autowired
     private ItemDAO itemDAO;
-
-    public ItemBOImpl() {
-
-    }
 
     @Override
     public void saveItem(ItemDTO dto) throws Exception {
@@ -38,6 +35,7 @@ public class ItemBOImpl implements ItemBO {
         itemDAO.delete(code);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ItemDTO> findAllItems() throws Exception {
         return mapper.getItemDTOs(itemDAO.getAll());

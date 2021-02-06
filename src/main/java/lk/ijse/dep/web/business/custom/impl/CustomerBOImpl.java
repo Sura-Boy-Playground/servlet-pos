@@ -1,11 +1,13 @@
 package lk.ijse.dep.web.business.custom.impl;
 
 import lk.ijse.dep.web.business.custom.CustomerBO;
+import lk.ijse.dep.web.business.custom.ItemBO;
 import lk.ijse.dep.web.business.util.EntityDTOMapper;
 import lk.ijse.dep.web.dao.custom.CustomerDAO;
 import lk.ijse.dep.web.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,9 +21,8 @@ public class CustomerBOImpl implements CustomerBO {
     @Autowired
     private EntityDTOMapper mapper;
 
-    public CustomerBOImpl() {
-
-    }
+    @Autowired
+    private ItemBO itemBO;
 
     @Override
     public void saveCustomer(CustomerDTO dto) throws Exception {
@@ -38,6 +39,7 @@ public class CustomerBOImpl implements CustomerBO {
         customerDAO.delete(customerId);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CustomerDTO> findAllCustomers() throws Exception {
         return mapper.getCustomerDTOs(customerDAO.getAll());
