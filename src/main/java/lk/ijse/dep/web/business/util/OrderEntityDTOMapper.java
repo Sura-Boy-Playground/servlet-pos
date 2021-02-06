@@ -9,40 +9,28 @@ import lk.ijse.dep.web.entity.Customer;
 import lk.ijse.dep.web.entity.Order;
 import lk.ijse.dep.web.entity.OrderDetail;
 import lk.ijse.dep.web.entity.OrderDetailPK;
-import lk.ijse.dep.web.util.HibernateUtil;
-import org.hibernate.Session;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import java.sql.Date;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface OrderEntityDTOMapper {
-
-    OrderEntityDTOMapper instance = Mappers.getMapper(OrderEntityDTOMapper.class);
 
     @Mapping(source = "orderId", target = "id")
     @Mapping(source = ".", target = "date")
     @Mapping(source = ".", target = "customer")
     Order getOrder(OrderDTO dto);
 
-    default Date toDate(OrderDTO dto){
+    default Date toDate(OrderDTO dto) {
         return Date.valueOf(dto.getOrderDate());
     }
 
-    default Customer getCustomer(OrderDTO dto){
-        try(Session session = HibernateUtil.getSessionFactory().openSession()){
-            CustomerDAO customerDAO = AppInitializer.getContext().getBean(CustomerDAO.class);
-            try {
-                customerDAO.setSession(session);
-                return customerDAO.get(dto.getCustomerId());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+    default Customer getCustomer(OrderDTO dto) throws Exception {
+        CustomerDAO customerDAO = AppInitializer.getContext().getBean(CustomerDAO.class);
+        return customerDAO.get(dto.getCustomerId());
     }
 
     @Mapping(source = ".", target = "orderDetailPK", qualifiedByName = "pk")
@@ -51,7 +39,7 @@ public interface OrderEntityDTOMapper {
     List<OrderDetail> getOrderDetails(List<OrderDetailDTO> dtos);
 
     @Named("pk")
-    default OrderDetailPK toOrderDetailPK(OrderDetailDTO dto){
+    default OrderDetailPK toOrderDetailPK(OrderDetailDTO dto) {
         return new OrderDetailPK(dto.getOrderId(), dto.getItemCode());
     }
 }

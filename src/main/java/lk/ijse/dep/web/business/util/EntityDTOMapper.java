@@ -12,10 +12,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EntityDTOMapper {
-
-    EntityDTOMapper instance = Mappers.getMapper(EntityDTOMapper.class);
 
 //    default EntityDTOMapper getInstance(){
 //        return Mappers.getMapper(EntityDTOMapper.class);

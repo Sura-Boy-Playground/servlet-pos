@@ -33,9 +33,8 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final SessionFactory sf = (SessionFactory) getServletContext().getAttribute("sf");
 
-        try (Session session = sf.openSession()) {
+        try{
 
             if (req.getPathInfo() == null || req.getPathInfo().replace("/", "").trim().isEmpty()) {
                 throw new HttpResponseException(400, "Invalid item code", null);
@@ -44,7 +43,6 @@ public class ItemServlet extends HttpServlet {
             String code = req.getPathInfo().replace("/", "");
 
             ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
-            itemBO.setSession(session);
             itemBO.deleteItem(code);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
@@ -56,9 +54,7 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        final SessionFactory sf = (SessionFactory) getServletContext().getAttribute("sf");
-
-        try (Session session = sf.openSession()) {
+        try {
 
             if (req.getPathInfo() == null || req.getPathInfo().replace("/", "").trim().isEmpty()) {
                 throw new HttpResponseException(400, "Invalid item code", null);
@@ -73,7 +69,6 @@ public class ItemServlet extends HttpServlet {
             }
 
             ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
-            itemBO.setSession(session);
             dto.setCode(code);
             itemBO.updateItem(dto);
             resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -88,12 +83,10 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Jsonb jsonb = JsonbBuilder.create();
-        final SessionFactory sf = (SessionFactory) getServletContext().getAttribute("sf");
 
-        try (Session session = sf.openSession()) {
+        try {
             resp.setContentType("application/json");
             ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
-            itemBO.setSession(session);
             resp.getWriter().println(jsonb.toJson(itemBO.findAllItems()));
 
         } catch (Throwable t) {
@@ -104,9 +97,8 @@ public class ItemServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Jsonb jsonb = JsonbBuilder.create();
-        final SessionFactory sf = (SessionFactory) getServletContext().getAttribute("sf");
 
-        try (Session session = sf.openSession()) {
+        try {
             ItemDTO dto = jsonb.fromJson(req.getReader(), ItemDTO.class);
 
             if (dto.getCode() == null || dto.getCode().trim().isEmpty() || dto.getDescription() == null || dto.getDescription().trim().isEmpty() || dto.getUnitPrice() == null || dto.getUnitPrice().doubleValue() == 0.0 || dto.getQtyOnHand() == null) {
@@ -114,7 +106,6 @@ public class ItemServlet extends HttpServlet {
             }
 
             ItemBO itemBO = AppInitializer.getContext().getBean(ItemBO.class);
-            itemBO.setSession(session);
             itemBO.saveItem(dto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json");
