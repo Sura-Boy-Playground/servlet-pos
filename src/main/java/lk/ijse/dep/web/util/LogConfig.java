@@ -1,11 +1,5 @@
-package lk.ijse.dep.web.listener;
+package lk.ijse.dep.web.util;
 
-import lk.ijse.dep.web.AppInitializer;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.FileHandler;
@@ -13,24 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-@WebListener
-public class ContextListener implements ServletContextListener {
+public class LogConfig {
 
-    org.slf4j.Logger logger = LoggerFactory.getLogger(ContextListener.class);
-
-    public ContextListener() {
-
-    }
-
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-
-        try {
-            Class.forName("lk.ijse.dep.web.AppInitializer");
-        } catch (ClassNotFoundException e) {
-            logger.error("Failed to load the spring container", e);
-        }
-
+    public static void initLogging(){
         Properties prop = new Properties();
         try {
             String logFilePath;
@@ -46,10 +25,5 @@ public class ContextListener implements ServletContextListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        AppInitializer.getContext().close();
     }
 }

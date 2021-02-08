@@ -15,4 +15,6 @@ public interface CustomerBO extends SuperBO {
 
     List<CustomerDTO> findAllCustomers() throws Exception;
 
+    CustomerDTO findCustomer(String id) throws Exception;
+
 }

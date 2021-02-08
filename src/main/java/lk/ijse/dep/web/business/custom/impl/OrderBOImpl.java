@@ -33,6 +33,7 @@ public class OrderBOImpl implements OrderBO {
     @Override
     public void placeOrder(OrderDTO dto) throws Exception {
         /* 1. Saving the order */
+        System.out.println(dto);
         orderDAO.save(mapper.getOrder(dto));
 
         /* 2. Saving Order Details -> Updating the stock */

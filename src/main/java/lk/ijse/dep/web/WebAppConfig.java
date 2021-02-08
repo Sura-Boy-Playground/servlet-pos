@@ -2,10 +2,10 @@ package lk.ijse.dep.web;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @ComponentScan
 @Configuration
-@Import(HibernateConfig.class)
-public class AppConfig {
+@EnableWebMvc
+public class WebAppConfig {
 }
